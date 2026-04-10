@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Attendance System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h1>AI Attendance System</h1>
+<button onclick="logout()">Logout</button>
+
+<!-- Login Button -->
+<a href="login.html">
+<button>Login</button>
+</a>
+
+<!-- Student Registration Button -->
+<a href="student_register.html">
+<button>Student Registration</button>
+</a>
+
+<form id="form">
+    <input type="text" id="name" placeholder="Student Name" required>
+    <input type="number" id="attendance" placeholder="Attendance %" required>
+    <input type="number" id="marks" placeholder="Marks" required>
+    <button type="submit">Submit</button>
+</form>
+
+<table id="table">
+    <tr>
+        <th>Name</th>
+        <th>Attendance</th>
+        <th>Marks</th>
+        <th>Performance</th>
+    </tr>
+</table>
+<h2>Attendance Graph</h2>
+
+<canvas id="chart" width="400" height="200"></canvas>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script src="script.js"></script>
+</body>
+</html>
