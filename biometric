@@ -1,0 +1,221 @@
+database = {
+    "ABC": "1234",
+    "Ebc": "5678"
+}
+
+name = input("Enter Name: ")
+fingerprint = input("Scan Fingerprint: ")
+
+if name in database and database[name] == fingerprint:
+    print("Attendance Marked ")
+else:
+    print("Authentication Failed ")
+import cv2
+import face_recognition
+import os
+import pickle
+
+DATASET = "dataset"
+ENCODINGS_FILE = "encodings.pkl"
+
+# ➤ Capture Student Image
+def capture_student(name):
+    cam = cv2.VideoCapture(0)
+    print("Press 's' to capture image")
+
+    while True:
+        ret, frame = cam.read()
+        cv2.imshow("Capture", frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('s'):
+            path = os.path.join(DATASET, name + ".jpg")
+            cv2.imwrite(path, frame)
+            print("Image saved:", path)
+            break
+
+    cam.release()
+    cv2.destroyAllWindows()
+
+
+# ➤ Train Faces
+def train_faces():
+    encodings = []
+    names = []
+
+    for file in os.listdir(DATASET):
+        img_path = os.path.join(DATASET, file)
+        image = face_recognition.load_image_file(img_path)
+        face_enc = face_recognition.face_encodings(image)
+
+        if face_enc:
+            encodings.append(face_enc[0])
+            names.append(file.split(".")[0])
+
+    with open(ENCODINGS_FILE, "wb") as f:
+        pickle.dump((encodings, names), f)
+
+    print("Training complete!")
+
+
+# ➤ Recognize Face
+def recognize():
+    with open(ENCODINGS_FILE, "rb") as f:
+        known_encodings, known_names = pickle.load(f)
+
+    cam = cv2.VideoCapture(0)
+
+    while True:
+        ret, frame = cam.read()
+        rgb = frame[:, :, ::-1]
+
+        faces = face_recognition.face_locations(rgb)
+        encodings = face_recognition.face_encodings(rgb, faces)
+
+        for enc in encodings:
+            matches = face_recognition.compare_faces(known_encodings, enc)
+            name = "Unknown"
+
+            if True in matches:
+                name = known_names[matches.index(True)]
+                print("Attendance Marked for:", name)
+
+        cv2.imshow("Recognition", frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cam.release()
+    cv2.destroyAllWindows()
+
+
+# 🔷 MENU
+while True:
+    print("\n1. Add Student")
+    print("2. Train System")
+    print("3. Start Recognition")
+    print("4. Exit")
+
+    choice = input("Enter choice: ")
+
+    if choice == "1":
+        name = input("Enter student name: ")
+        capture_student(name)
+
+    elif choice == "2":
+        train_faces()
+
+    elif choice == "3":
+        recognize()
+
+    elif choice == "4":
+        break
+import cv2
+import face_recognition
+import os
+import pickle
+import tkinter as tk
+from tkinter import messagebox
+import mysql.connector
+
+# Database connection
+db = mysql.connector.connect(
+    host="localhost",
+    user="root",
+    password="",
+    database="erp_ai"
+)
+cursor = db.cursor()
+
+DATASET = "dataset"
+ENC_FILE = "encodings.pkl"
+
+# ➤ Capture Image
+def add_student():
+    name = entry.get()
+    if name == "":
+        messagebox.showerror("Error", "Enter name")
+        return
+
+    cam = cv2.VideoCapture(0)
+    messagebox.showinfo("Info", "Press 's' to capture")
+
+    while True:
+        ret, frame = cam.read()
+        cv2.imshow("Capture", frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('s'):
+            path = os.path.join(DATASET, name + ".jpg")
+            cv2.imwrite(path, frame)
+            cursor.execute("INSERT INTO students (name) VALUES (%s)", (name,))
+            db.commit()
+            break
+
+    cam.release()
+    cv2.destroyAllWindows()
+    messagebox.showinfo("Done", "Student Added")
+
+
+# ➤ Train
+def train():
+    encodings = []
+    names = []
+
+    for file in os.listdir(DATASET):
+        img = face_recognition.load_image_file(os.path.join(DATASET, file))
+        enc = face_recognition.face_encodings(img)
+
+        if enc:
+            encodings.append(enc[0])
+            names.append(file.split(".")[0])
+
+    with open(ENC_FILE, "wb") as f:
+        pickle.dump((encodings, names), f)
+
+    messagebox.showinfo("Done", "Training Complete")
+
+
+# ➤ Recognize
+def recognize():
+    with open(ENC_FILE, "rb") as f:
+        known_enc, known_names = pickle.load(f)
+
+    cam = cv2.VideoCapture(0)
+
+    while True:
+        ret, frame = cam.read()
+        rgb = frame[:, :, ::-1]
+
+        faces = face_recognition.face_locations(rgb)
+        encodings = face_recognition.face_encodings(rgb, faces)
+
+        for enc in encodings:
+            matches = face_recognition.compare_faces(known_enc, enc)
+            name = "Unknown"
+
+            if True in matches:
+                name = known_names[matches.index(True)]
+                cursor.execute("INSERT INTO attendance (name) VALUES (%s)", (name,))
+                db.commit()
+                print("Marked:", name)
+
+        cv2.imshow("Recognition", frame)
+
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
+    cam.release()
+    cv2.destroyAllWindows()
+
+
+# GUI
+root = tk.Tk()
+root.title("AI ERP System")
+
+entry = tk.Entry(root)
+entry.pack(pady=10)
+
+tk.Button(root, text="Add Student", command=add_student).pack(pady=5)
+tk.Button(root, text="Train Model", command=train).pack(pady=5)
+tk.Button(root, text="Start Recognition", command=recognize).pack(pady=5)
+
+root.mainloop()
