@@ -1,0 +1,58 @@
+CREATE TABLE notes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100),
+    content TEXT
+);
+app.post('/addNote', (req, res) => {
+    const { title, content } = req.body;
+    const sql = "INSERT INTO notes (title, content) VALUES (?, ?)";
+    db.query(sql, [title, content], (err) => {
+        if (err) throw err;
+        res.send("Note Added");
+    });
+});
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notes Management</title>
+</head>
+<body>
+
+<h2>Add Notes</h2>
+
+<input type="text" id="title" placeholder="Title">
+<textarea id="content" placeholder="Write notes..."></textarea>
+<button onclick="addNote()">Add Note</button>
+
+<h2>All Notes</h2>
+<ul id="list"></ul>
+
+<script>
+function addNote() {
+    fetch("http://localhost:3000/addNote", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            title: document.getElementById("title").value,
+            content: document.getElementById("content").value
+        })
+    }).then(() => loadNotes());
+}
+
+function loadNotes() {
+    fetch("http://localhost:3000/notes")
+    .then(res => res.json())
+    .then(data => {
+        let list = document.getElementById("list");
+        list.innerHTML = "";
+        data.forEach(note => {
+            list.innerHTML += `<li><b>${note.title}</b>: ${note.content}</li>`;
+        });
+    });
+}
+
+loadNotes();
+</script>
+
+</body>
+</html>
