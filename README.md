@@ -1,12 +1,14 @@
-# AI-Based Attendance and Academic Performance Monitoring System
+AI-Based Attendance and Academic Performance Monitoring System
 
-## Overview
+Overview
 
-The AI-Based Attendance and Academic Performance Monitoring System is a web-based application that automates student attendance using face recognition technology. It also helps manage student records and monitor academic performance through an easy-to-use admin dashboard.
+The AI-Based Attendance and Academic Performance Monitoring System is a web-based application designed to automate student attendance management and monitor academic performance. The system provides a centralized platform for managing student records, attendance details, and academic information through an easy-to-use interface.
 
-## Features
+The project helps reduce manual attendance processes, improves record accuracy, and enables efficient monitoring of student performance.
 
-- Face Recognition Based Attendance
+Features
+
+- Biometric-Based Attendance Management
 - Student Registration and Login
 - Admin Dashboard
 - Attendance Management
@@ -15,40 +17,42 @@ The AI-Based Attendance and Academic Performance Monitoring System is a web-base
 - Secure Authentication
 - Responsive User Interface
 
-## Technologies Used
+Technologies Used
 
 - Python
-- OpenCV
 - HTML
 - CSS
 - JavaScript
 - MySQL
 
-## Project Structure
+Project Structure
 
-- Frontend
-- Backend
-- Database
-- Face Recognition Module
+Frontend
+Backend
+Database
+Biometric Attendance Module
+Academic Monitoring Module
 
-## How to Run
+How to Run
 
 1. Clone the repository.
-2. Install the required Python libraries.
+2. Install the required dependencies.
 3. Configure the MySQL database.
 4. Run the application.
 5. Open the project in your browser.
 
-## Future Enhancements
+Future Enhancements
 
+- Face Recognition-Based Attendance
 - QR Code Attendance
 - Email Notifications
 - Mobile Application
 - Cloud Database Integration
 - AI-Based Attendance Analytics
+- Student Performance Prediction using Machine Learning
 
-## Author
+Author
 
-**Shreya Srivastava**
+Shreya Srivastava
 
 B.Tech CSE (2026)
