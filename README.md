@@ -11,9 +11,11 @@ Features
 - Biometric-Based Attendance Management
 - Student Registration and Login
 - Admin Dashboard
+- AI chatbot
 - Attendance Management
 - Academic Performance Tracking
 - Student Record Management
+- QR Code-Based Attendance          Management
 - Secure Authentication
 - Responsive User Interface
 
@@ -43,8 +45,7 @@ How to Run
 
 Future Enhancements
 
-- Face Recognition-Based Attendance
-- QR Code Attendance
+- Face Recognition-Based     Attendance
 - Email Notifications
 - Mobile Application
 - Cloud Database Integration
