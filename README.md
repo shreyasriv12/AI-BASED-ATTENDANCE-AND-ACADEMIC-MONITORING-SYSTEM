@@ -15,7 +15,6 @@ Features
 - Attendance Management
 - Academic Performance Tracking
 - Student Record Management
-- QR Code-Based Attendance          Management
 - Secure Authentication
 - Responsive User Interface
 
